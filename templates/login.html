@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fahkwang"/>
+</head>
+<body>
+  <div id="loginModal" class="modal" style="display:flex;">
+    <span class="close" id="closeLogin" style="position:absolute;top:18px;right:28px;font-size:2rem;cursor:pointer;">&times;</span>
+    <div class="modal-content" style="max-width:400px;margin:auto;position:relative;">
+      <h2 class="heading">Login</h2>
+      <form id="loginForm" method="POST" action="{{ url_for('login') }}" style="display:flex;flex-direction:column;gap:18px;">
+        <input type="text" id="loginId" name="loginId" placeholder="Login ID" required style="padding:10px;border-radius:5px;border:1px solid #ccc;">
+        <input type="password" id="password" name="password" placeholder="Password" required style="padding:10px;border-radius:5px;border:1px solid #ccc;">
+        <button type="submit" class="btn" style="width:100%;">Login</button>
+        <a href="{{ url_for('password') }}" class="forgot-password" style="text-align:center; color:#1323d5; text-decoration:underline; font-size:0.98rem; margin-top:8px;">Forgot password?</a>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Close modal
+    document.getElementById('closeLogin').onclick = function() {
+      window.location.href = "{{ url_for('index') }}";
+    };
+
+    // Handle login
+    //document.getElementById('loginForm').onsubmit = function(e) {
+      //e.preventDefault();
+      //const loginId = document.getElementById('loginId').value;
+      //const password = document.getElementById('password').value;
+
+      // You can replace this with your real authentication logic
+      if (loginId === "admin" && password === "1234") {
+        window.location.href = '{{ url_for("admin") }}';
+      } else {
+        alert("Invalid credentials. Try again or click Forgot Password.");
+      }
+    //};
+
+    // Forgot password link
+    document.getElementById('forgotPasswordLink').onclick = function(e) {
+      e.preventDefault();
+      window.location.href = "{{ url_for('password') }}";
+    };
+  </script>
+</body>
+</html>

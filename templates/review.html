@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Us - DNS Homes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fahkwang" />
+    <style>
+        .review-container {
+            max-width: 600px;
+            margin: 100px auto 50px;
+            padding: 40px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .review-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .review-header h1 {
+            color: #977f4d;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .review-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .review-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #977f4d;
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .star-rating input[type="radio"] {
+            display: none;
+        }
+
+        .star-rating label {
+            font-size: 30px;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .star-rating label:hover,
+        .star-rating input[type="radio"]:checked + label {
+            color: #ffd700;
+        }
+
+        .submit-btn {
+            background: #977f4d;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background: #7c5501;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #977f4d;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="top-header">
+        <div class="logo-text">
+            <b>Pawan <span>Dubey</span></b>
+        </div>
+        <a href="{{ url_for('index') }}" class="back-link">← Back to Home</a>
+    </header>
+
+    <!-- Review Form -->
+    <div class="review-container">
+        <div class="review-header">
+            <h1>Share Your Experience</h1>
+            <p>We value your feedback! Please take a moment to share your experience with DNS Homes.</p>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            <i class='bx bx-check-circle'></i> Thank you for your review! It has been submitted for approval.
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            <i class='bx bx-error-circle'></i> Please fill in all required fields.
+        </div>
+
+        <form class="review-form" id="reviewForm">
+            <div class="form-group">
+                <label for="name">Full Name <span class="required">*</span></label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Address <span class="required">*</span></label>
+                <input type="text" id="address" name="address" required>
+            </div>
+
+            <div class="form-group">
+                <label>Star Rating <span class="required">*</span></label>
+                <div class="star-rating">
+                    <input type="radio" id="star5" name="star_rating" value="5" required>
+                    <label for="star5"><i class='bx bxs-star'></i></label>
+                    
+                    <input type="radio" id="star4" name="star_rating" value="4">
+                    <label for="star4"><i class='bx bxs-star'></i></label>
+                    
+                    <input type="radio" id="star3" name="star_rating" value="3">
+                    <label for="star3"><i class='bx bxs-star'></i></label>
+                    
+                    <input type="radio" id="star2" name="star_rating" value="2">
+                    <label for="star2"><i class='bx bxs-star'></i></label>
+                    
+                    <input type="radio" id="star1" name="star_rating" value="1">
+                    <label for="star1"><i class='bx bxs-star'></i></label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="text_review">Your Review <span class="required">*</span></label>
+                <textarea id="text_review" name="text_review" rows="5" required placeholder="Tell us about your experience..."></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Review</button>
+        </form>
+
+        <a href="{{ url_for('index') }}" class="back-link">← Return to Home</a>
+    </div>
+
+    <script>
+        document.getElementById('reviewForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = {
+                name: formData.get('name'),
+                address: formData.get('address'),
+                star_rating: parseInt(formData.get('star_rating')),
+                text_review: formData.get('text_review')
+            };
+
+            try {
+                const response = await fetch('/api/testimonials', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.getElementById('errorMessage').style.display = 'none';
+                    document.getElementById('reviewForm').reset();
+                    
+                    // Hide success message after 5 seconds
+                    setTimeout(() => {
+                        document.getElementById('successMessage').style.display = 'none';
+                    }, 5000);
+                } else {
+                    document.getElementById('errorMessage').textContent = result.message || 'Error submitting review';
+                    document.getElementById('errorMessage').style.display = 'block';
+                }
+            } catch (error) {
+                document.getElementById('errorMessage').textContent = 'Network error. Please try again.';
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+        });
+
+        // Star rating interaction
+        const stars = document.querySelectorAll('.star-rating label');
+        stars.forEach((star, index) => {
+            star.addEventListener('mouseenter', () => {
+                stars.forEach((s, i) => {
+                    s.style.color = i <= index ? '#ffd700' : '#ddd';
+                });
+            });
+        });
+
+        document.querySelector('.star-rating').addEventListener('mouseleave', () => {
+            const checkedStar = document.querySelector('input[name="star_rating"]:checked');
+            stars.forEach((star, index) => {
+                if (checkedStar) {
+                    star.style.color = index < parseInt(checkedStar.value) ? '#ffd700' : '#ddd';
+                } else {
+                    star.style.color = '#ddd';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

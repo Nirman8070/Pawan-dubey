@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pawan dubey profile - DNS Homes Portfolio</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fahkwang" />
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+    h1,h2 { color: #333; }
+    h2 { margin-top: 40px; border-bottom: 2px solid #977f4d; padding-bottom: 5px; }
+    .section { background: #fff; border-radius: 10px; padding: 20px; margin-top: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    input[type="file"], input[type="text"], input[type="email"], input[type="tel"], textarea, select { display:block; margin:10px 0; padding:10px; width:100%; max-width:500px; border:1px solid #ddd; border-radius:5px; }
+    textarea { resize: vertical; min-height: 100px; }
+    button { margin:10px 10px 0 0; padding:8px 16px; background-color:#977f4d; color:white; border:none; border-radius:5px; cursor:pointer; transition:background-color 0.3s; }
+    button:hover { background-color:#7c5501; }
+    label { font-weight:bold; margin-top:15px; display:inline-block; color:#333; }
+    .current-preview { max-width:200px; max-height:150px; margin:10px 0; border:1px solid #ddd; border-radius:5px; }
+    .project-management { border-top: 1px solid #eee; margin-top: 20px; padding-top:20px; }
+    .logout-btn { background:#d9534f; } .logout-btn:hover { background:#c9302c; }
+    .success-message { color:#4CAF50; margin:10px 0; }
+    .error-message { color:#f44336; margin:10px 0; }
+    .preview-box { display:flex; gap:10px; flex-wrap:wrap; max-height:200px; overflow:auto; padding:8px; border:1px solid #eee; border-radius:6px; background:#fafafa; }
+    .preview-item { position:relative; width:120px; height:90px; border-radius:6px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#fff; border:1px solid #ddd; padding:4px; flex:0 0 auto; }
+    .preview-item img, .preview-item video { max-width:100%; max-height:100%; display:block; }
+    .preview-item .del-btn { position:absolute; top:4px; right:4px; background: rgba(0,0,0,0.6); color:#fff; border:none; border-radius:3px; padding:2px 6px; cursor:pointer; }
+    .file-list { display:flex; flex-direction:column; gap:6px; max-height:200px; overflow:auto; padding:8px; border:1px solid #eee; border-radius:6px; background:#fafafa; }
+    .file-entry { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:6px; background:#fff; border-radius:6px; border:1px solid #ddd; }
+    .inline-small { display:inline-block; vertical-align:middle; margin-left:6px; }
+  </style>
+</head>
+<body>
+
+  <div style="display:flex; justify-content:space-between; align-items:center;">
+    <h1>Pawan dubey profile- DNS Homes Portfolio</h1>
+    <button id="logoutBtn" class="logout-btn">Logout</button>
+  </div>
+
+  <!-- About -->
+  <div class="section" id="about-section">
+    <h2>About Me</h2>
+    <label>Update About Name</label>
+    <input type="text" id="aboutName" placeholder="Enter name"><br>
+    <label>Update About Title</label>
+    <input type="text" id="aboutTitle" placeholder="Enter title"><br>
+    <label>Update About Description</label>
+    <textarea id="aboutDescription" rows="8" placeholder="Enter description"></textarea><br>
+    <button onclick="updateAbout()">Update About</button>
+    <br><br>
+    <label>Update About Image</label>
+    <input type="file" accept="image/*" id="aboutImageInput">
+    <img id="aboutImagePreview" src="/media/about/image" alt="About Image" style="max-width:200px;max-height:200px;">
+    <button onclick="updateAboutImage()">Update Image</button>
+  </div>
+
+  <!-- Project Management -->
+  <div class="section" id="project-management-section">
+    <h2>Project Management</h2>
+    <button onclick="showProjectAction('configure')">Configure Existing Project</button>
+    <button onclick="showProjectAction('create')">Create New Project</button>
+
+    <div id="projectTypeSelect" style="display:none;">
+      <label>Select Project Type:</label>
+      <select id="projectType" onchange="showProjectForm()">
+        <option value="">--Select--</option>
+        <option value="running">Running</option>
+        <option value="completed">Completed</option>
+      </select>
+    </div>
+
+    <div id="projectFormContainer"></div>
+  </div>
+
+  <!-- Footer -->
+  <div class="section" id="footer-section">
+    <h2>Footer Information</h2>
+    <label>Phone 1</label>
+    <input type="text" id="phone1">
+    <label>Phone 2</label>
+    <input type="text" id="phone2">
+    <label>Email</label>
+    <input type="email" id="email">
+    <label>Office Address</label>
+    <input type="text" id="address">
+    <button onclick="updateContact()">Update Contact</button>
+  </div>
+
+  <div class="section" id="change-password-section">
+    <h2>Change Password</h2>
+    <label>New Password</label>
+    <input type="password" id="newPassword" placeholder="Enter new password">
+    <input type="checkbox" id="showNewPassword" onclick="togglePassword('newPassword','showNewPassword')"> Show Password
+    <br>
+    <label>Confirm New Password</label>
+    <input type="password" id="confirmNewPassword" placeholder="Confirm new password">
+    <input type="checkbox" id="showConfirmPassword" onclick="togglePassword('confirmNewPassword','showConfirmPassword')"> Show Password
+    <br>
+    <button onclick="changePassword()">Change Password</button>
+  </div>
+
+  <!-- Testimonial Management Section -->
+  <div class="section" id="testimonial-management-section">
+    <h2>Testimonial Management</h2>
+    <div id="testimonial-list">
+      <p>Loading testimonials...</p>
+    </div>
+  </div>
+
+  <!-- User Management Section -->
+  <div class="section" id="user-management-section">
+    <h2>User Management</h2>
+    <div id="user-profile-section">
+      <h3>Update Profile</h3>
+      <label>Current Username</label>
+      <input type="text" id="currentUsername" readonly>
+      <label>New Username</label>
+      <input type="text" id="newUsername" placeholder="Enter new username">
+      <label>Current Mobile</label>
+      <input type="text" id="currentMobile" readonly>
+      <label>New Mobile</label>
+      <input type="tel" id="newMobile" placeholder="Enter 10-digit mobile number">
+      <button onclick="updateUsername()">Update Username</button>
+      <button onclick="updateMobile()">Update Mobile</button>
+    </div>
+  </div>
+
+<script>
+  // helpers
+  function showMessage(message, type) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
+    messageDiv.textContent = message;
+    messageDiv.style.padding = '10px';
+    messageDiv.style.margin = '10px 0';
+    messageDiv.style.borderRadius = '5px';
+    messageDiv.style.backgroundColor = type === 'success' ? '#d4edda' : '#f8d7da';
+    messageDiv.style.color = type === 'success' ? '#155724' : '#721c24';
+    document.body.insertBefore(messageDiv, document.body.firstChild);
+    setTimeout(() => messageDiv.remove(), 3000);
+  }
+
+  document.getElementById('logoutBtn').onclick = function () {
+    window.location.href = '{{ url_for("logout") }}';
+  };
+
+  function togglePassword(inputId, checkboxId) {
+    const input = document.getElementById(inputId);
+    const checkbox = document.getElementById(checkboxId);
+    input.type = checkbox.checked ? 'text' : 'password';
+  }
+
+  // ABOUT
+  async function updateAbout() {
+    const payload = {
+      name: document.getElementById('aboutName').value,
+      title: document.getElementById('aboutTitle').value,
+      description: document.getElementById('aboutDescription').value
+    };
+    const res = await fetch('/api/about', {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    });
+    showMessage(res.ok ? 'About updated' : 'Error', res.ok ? 'success' : 'error');
+  }
+
+  async function updateAboutImage() {
+    const input = document.getElementById('aboutImageInput');
+    if (!input.files.length) return showMessage('Select an image', 'error');
+    const form = new FormData();
+    form.append('image', input.files[0]);
+    const res = await fetch('/api/about/image', { method: 'POST', body: form });
+    showMessage(res.ok ? 'Image updated' : 'Error', res.ok ? 'success' : 'error');
+    if (res.ok) {
+      document.getElementById('aboutImagePreview').src = '/media/about/image?' + new Date().getTime();
+    }
+  }
+
+  // CONTACT
+  async function updateContact() {
+    const payload = {
+      phone1: document.getElementById('phone1').value,
+      phone2: document.getElementById('phone2').value,
+      email: document.getElementById('email').value,
+      office_address: document.getElementById('address').value
+    };
+    const res = await fetch('/api/contact', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    showMessage(res.ok ? 'Contact updated' : 'Error', res.ok ? 'success' : 'error');
+  }
+
+  async function changePassword() {
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+    if (!newPassword || !confirmNewPassword) {
+      showMessage('Please fill both password fields.', 'error');
+      return;
+    }
+    if (newPassword !== confirmNewPassword) {
+      showMessage('Passwords do not match.', 'error');
+      return;
+    }
+    const res = await fetch('/api/admin/password', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ new_password: newPassword })
+    });
+    showMessage(res.ok ? 'Password changed!' : 'Error changing password', res.ok ? 'success' : 'error');
+  }
+
+  // PROJECT MANAGEMENT HELPERS
+  function showProjectAction(action) {
+    window.projectAction = action;
+    document.getElementById('projectTypeSelect').style.display = 'block';
+    document.getElementById('projectFormContainer').innerHTML = '';
+  }
+
+  function showProjectForm() {
+    const type = document.getElementById('projectType').value;
+    const container = document.getElementById('projectFormContainer');
+    if (!type) {
+      container.innerHTML = '';
+      return;
+    }
+    if (window.projectAction === 'create') {
+      container.innerHTML = `
+        <label>Title</label>
+        <input type="text" id="newProjectTitle" required>
+        <label>Address</label>
+        <input type="text" id="newProjectAddress" required>
+        <label>Map URL</label>
+        <input type="text" id="newProjectMapUrl">
+        <label>Description</label>
+        <textarea id="newProjectDesc" rows="4" required></textarea>
+        <label>Info</label>
+        <input type="text" id="newProjectInfo">
+        <label>Thumbnail Image</label>
+        <input type="file" accept="image/*" id="newProjectThumbnail"><br>
+        <label>Image Gallery</label>
+        <input type="file" accept="image/*" multiple id="newProjectImages"><br>
+        <div id="newImagesPreview" class="preview-box"></div>
+        <label>Video Gallery</label>
+        <input type="file" accept="video/*" multiple id="newProjectVideos"><br>
+        <div id="newVideosPreview" class="preview-box"></div>
+        <label>PDF Files</label>
+        <input type="file" accept=".pdf,.doc,.docx" multiple id="newProjectFiles"><br>
+        <div id="newFilesPreview" class="file-list"></div>
+        <button onclick="createNewProject('${type}')">Create Project</button>
+      `;
+
+      // attach preview handlers
+      document.getElementById('newProjectImages').addEventListener('change', (e) => previewSelectedImages(e.target.files, 'newImagesPreview'));
+      document.getElementById('newProjectVideos').addEventListener('change', (e) => previewSelectedVideos(e.target.files, 'newVideosPreview'));
+      document.getElementById('newProjectFiles').addEventListener('change', (e) => previewSelectedFiles(e.target.files, 'newFilesPreview'));
+    } else if (window.projectAction === 'configure') {
+      container.innerHTML = `
+        <label>Select Project</label>
+        <select id="existingProjectSelect"></select>
+        <button onclick="loadExistingProject('${type}')">Load Project</button>
+        <div id="existingProjectForm"></div>
+      `;
+      loadProjectsForSelect(type);
+    }
+  }
+
+  async function loadProjectsForSelect(type) {
+    try {
+      const res = await fetch(`/api/projects/${type}`);
+      const data = await res.json();
+      const sel = document.getElementById('existingProjectSelect');
+      sel.innerHTML = '<option value="">--Select Project--</option>';
+      data.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.title;
+        sel.appendChild(opt);
+      });
+    } catch (err) { showMessage('Error loading projects','error'); }
+  }
+
+  // RENDER EXISTING PROJECT FORM + MEDIA PREVIEWS
+  async function loadExistingProject(type) {
+    const id = document.getElementById('existingProjectSelect').value;
+    if (!id) return showMessage('Please select a project', 'error');
+    try {
+      const res = await fetch(`/api/projects/${id}`);
+      if (!res.ok) return showMessage('Error fetching project', 'error');
+      const data = await res.json();
+
+      const formContainer = document.getElementById('existingProjectForm');
+      formContainer.innerHTML = `
+        <label>Title</label>
+        <input type="text" id="editProjectTitle" value="${escapeHtml(data.title || '')}">
+        <label>Address</label>
+        <input type="text" id="editProjectAddress" value="${escapeHtml(data.address || '')}">
+        <label>Map URL</label>
+        <input type="text" id="editProjectMapUrl" value="${escapeHtml(data.map_url || '')}">
+        <label>Description</label>
+        <textarea id="editProjectDesc" rows="4">${escapeHtml(data.description || '')}</textarea>
+        <label>Info</label>
+        <input type="text" id="editProjectInfo" value="${escapeHtml(data.info || '')}">
+        <label>Update Thumbnail Image</label>
+        <input type="file" accept="image/*" id="editProjectThumbnail"><br>
+        <div style="margin-bottom:10px;">
+          <strong>Current Thumbnail</strong>
+          <div id="currentThumbnailPreview" class="preview-box"></div>
+        </div>
+        <label>Update Image Gallery</label>
+        <input type="file" accept="image/*" multiple id="editProjectImages"><br>
+        <div id="editImagesPreview" class="preview-box"></div>
+        <label>Update Video Gallery</label>
+        <input type="file" accept="video/*" multiple id="editProjectVideos"><br>
+        <div id="editVideosPreview" class="preview-box"></div>
+        <label>Update PDF Files</label>
+        <input type="file" accept=".pdf,.doc,.docx" multiple id="editProjectFiles"><br>
+        <div id="editFilesPreview" class="file-list"></div>
+        <div style="margin-top:12px;">
+          <button onclick="updateProject('${type}', ${id})">Update Project</button>
+          <button onclick="uploadProjectMedia('image', ${id}, 'editProjectImages')">Upload Images</button>
+          <button onclick="uploadProjectMedia('video', ${id}, 'editProjectVideos')">Upload Videos</button>
+          <button onclick="uploadProjectMedia('file', ${id}, 'editProjectFiles')">Upload Files</button>
+          <button onclick="deleteProject(${id})" style="background-color:#d9534f;">Delete Project</button>
+        </div>
+      `;
+
+      // preview handlers for selected files (before upload)
+      document.getElementById('editProjectImages').addEventListener('change', (e) => previewSelectedImages(e.target.files, 'editImagesPreview'));
+      document.getElementById('editProjectVideos').addEventListener('change', (e) => previewSelectedVideos(e.target.files, 'editVideosPreview'));
+      document.getElementById('editProjectFiles').addEventListener('change', (e) => previewSelectedFiles(e.target.files, 'editFilesPreview'));
+
+      // render existing media
+      renderExistingMediaPreviews(data);
+    } catch (err) {
+      console.error(err);
+      showMessage('Error loading project', 'error');
+    }
+  }
+
+  function escapeHtml(text) {
+    if (!text) return '';
+    return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // RENDER existing media into preview containers with delete buttons
+  function renderExistingMediaPreviews(project) {
+    // thumbnail
+    const thumbBox = document.getElementById('currentThumbnailPreview');
+    if (thumbBox) {
+      thumbBox.innerHTML = '';
+      if (project.thumbnail_image_id) {
+        const img = document.createElement('img');
+        img.src = `/media/project/image/${project.thumbnail_image_id}`;
+        img.className = 'current-preview';
+        thumbBox.appendChild(img);
+      } else {
+        thumbBox.textContent = 'No thumbnail set';
+      }
+    }
+
+    // images
+    const imagesBox = document.getElementById('editImagesPreview');
+    if (imagesBox) {
+      imagesBox.innerHTML = '';
+      if (project.images && project.images.length) {
+        project.images.forEach(img => {
+          const item = document.createElement('div');
+          item.className = 'preview-item';
+          const image = document.createElement('img');
+          image.src = `/media/project/image/${img.id}`;
+          image.alt = img.name;
+          item.appendChild(image);
+          const del = document.createElement('button');
+          del.className = 'del-btn';
+          del.textContent = 'x';
+          del.title = 'Delete image';
+          del.onclick = () => deleteMedia('image', img.id, project.id);
+          item.appendChild(del);
+          imagesBox.appendChild(item);
+        });
+      } else {
+        imagesBox.textContent = 'No images uploaded';
+      }
+    }
+
+    // videos
+    const vidsBox = document.getElementById('editVideosPreview');
+    if (vidsBox) {
+      vidsBox.innerHTML = '';
+      if (project.videos && project.videos.length) {
+        project.videos.forEach(v => {
+          const item = document.createElement('div');
+          item.className = 'preview-item';
+          const video = document.createElement('video');
+          video.src = `/media/project/video/${v.id}`;
+          video.controls = true;
+          video.style.maxHeight = '100%';
+          item.appendChild(video);
+          const del = document.createElement('button');
+          del.className = 'del-btn';
+          del.textContent = 'x';
+          del.title = 'Delete video';
+          del.onclick = () => deleteMedia('video', v.id, project.id);
+          item.appendChild(del);
+          vidsBox.appendChild(item);
+        });
+      } else {
+        vidsBox.textContent = 'No videos uploaded';
+      }
+    }
+
+    // files
+    const filesBox = document.getElementById('editFilesPreview');
+    if (filesBox) {
+      filesBox.innerHTML = '';
+      if (project.files && project.files.length) {
+        project.files.forEach(f => {
+          const entry = document.createElement('div');
+          entry.className = 'file-entry';
+          const name = document.createElement('span');
+          name.textContent = f.name;
+          const controls = document.createElement('div');
+          controls.style.display = 'flex';
+          controls.style.gap = '8px';
+          const dl = document.createElement('a');
+          dl.href = `/media/project/file/${f.id}`;
+          dl.textContent = 'Download';
+          dl.setAttribute('target','_blank');
+          const del = document.createElement('button');
+          del.className = 'del-btn';
+          del.style.position = 'static';
+          del.style.padding = '4px 8px';
+          del.textContent = 'Delete';
+          del.onclick = () => deleteMedia('file', f.id, project.id);
+          controls.appendChild(dl);
+          controls.appendChild(del);
+          entry.appendChild(name);
+          entry.appendChild(controls);
+          filesBox.appendChild(entry);
+        });
+      } else {
+        filesBox.textContent = 'No files uploaded';
+      }
+    }
+  }
+
+  // preview selected files (before uploading)
+  function previewSelectedImages(files, containerId) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    Array.from(files).forEach(file => {
+      if (!file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const item = document.createElement('div');
+        item.className = 'preview-item';
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        item.appendChild(img);
+        container.appendChild(item);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  function previewSelectedVideos(files, containerId) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    Array.from(files).forEach(file => {
+      if (!file.type.startsWith('video/')) return;
+      const url = URL.createObjectURL(file);
+      const item = document.createElement('div');
+      item.className = 'preview-item';
+      const vid = document.createElement('video');
+      vid.src = url;
+      vid.controls = true;
+      item.appendChild(vid);
+      container.appendChild(item);
+    });
+  }
+  function previewSelectedFiles(files, containerId) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    Array.from(files).forEach(file => {
+      const entry = document.createElement('div');
+      entry.className = 'file-entry';
+      const name = document.createElement('span');
+      name.textContent = file.name;
+      entry.appendChild(name);
+      container.appendChild(entry);
+    });
+  }
+
+  // create new project
+  async function createNewProject(type) {
+    const formData = new FormData();
+    formData.append('title', document.getElementById('newProjectTitle').value);
+    formData.append('address', document.getElementById('newProjectAddress').value);
+    formData.append('description', document.getElementById('newProjectDesc').value);
+    formData.append('info', document.getElementById('newProjectInfo').value);
+    formData.append('status', type);
+    formData.append('map_url', document.getElementById('newProjectMapUrl').value);
+
+    const thumbnail = document.getElementById('newProjectThumbnail').files[0];
+    if (thumbnail) formData.append('thumbnail', thumbnail);
+
+    const images = document.getElementById('newProjectImages').files;
+    for (let i = 0; i < images.length; i++) formData.append('images', images[i]);
+
+    const videos = document.getElementById('newProjectVideos').files;
+    for (let i = 0; i < videos.length; i++) formData.append('videos', videos[i]);
+
+    const files = document.getElementById('newProjectFiles').files;
+    for (let i = 0; i < files.length; i++) formData.append('files', files[i]);
+
+    try {
+      const response = await fetch('/api/projects', { method: 'POST', body: formData });
+      const result = await response.json();
+      if (response.ok) {
+        showMessage('Project created successfully!', 'success');
+        document.getElementById('projectFormContainer').innerHTML = '';
+        document.getElementById('projectType').value = '';
+      } else {
+        showMessage(result.message || 'Error creating project', 'error');
+      }
+    } catch (err) {
+      showMessage('Network error', 'error');
+    }
+  }
+
+  // update project (metadata + optional thumbnail)
+  async function updateProject(type, id) {
+    const formData = new FormData();
+    formData.append('title', document.getElementById('editProjectTitle').value);
+    formData.append('address', document.getElementById('editProjectAddress').value);
+    formData.append('description', document.getElementById('editProjectDesc').value);
+    formData.append('info', document.getElementById('editProjectInfo').value);
+    formData.append('map_url', document.getElementById('editProjectMapUrl').value);
+
+    const thumbnail = document.getElementById('editProjectThumbnail').files[0];
+    if (thumbnail) formData.append('thumbnail', thumbnail);
+
+    try {
+      const response = await fetch(`/api/projects/${id}`, { method: 'PUT', body: formData });
+      const result = await response.json();
+      if (response.ok) {
+        showMessage(result.message || 'Project updated!', 'success');
+        // refresh previews with returned project data if present
+        if (result.project) renderExistingMediaPreviews(result.project);
+      } else {
+        showMessage(result.message || 'Error updating project', 'error');
+      }
+    } catch (err) {
+      showMessage('Network error', 'error');
+    }
+  }
+
+  // upload selected media (images/videos/files) using dedicated endpoint
+  async function uploadProjectMedia(mediaType, projectId, inputId) {
+    const input = document.getElementById(inputId);
+    if (!input || !input.files.length) {
+      showMessage(`Please select ${mediaType}s to upload`, 'error');
+      return;
+    }
+    const formData = new FormData();
+    for (const file of input.files) formData.append('file', file);
+
+    try {
+      const response = await fetch(`/api/upload/${mediaType}/${projectId}`, { method: 'POST', body: formData });
+      const result = await response.json();
+      if (response.ok) {
+        showMessage(result.message || `${mediaType}s uploaded!`, 'success');
+        // fetch updated project to refresh previews
+        const projRes = await fetch(`/api/projects/${projectId}`);
+        if (projRes.ok) {
+          const data = await projRes.json();
+          renderExistingMediaPreviews(data);
+          // clear the input and previews for newly selected files
+          if (input) { input.value = ''; const previewId = inputId === 'editProjectImages' ? 'editImagesPreview' : inputId === 'editProjectVideos' ? 'editVideosPreview' : 'editFilesPreview'; document.getElementById(previewId).innerHTML = ''; }
+        }
+      } else {
+        showMessage(result.message || 'Error uploading', 'error');
+      }
+    } catch (err) {
+      showMessage('Network error', 'error');
+    }
+  }
+
+  // delete single media
+  async function deleteMedia(type, id, projectId) {
+    if (!confirm('Delete this item?')) return;
+    try {
+      const res = await fetch(`/api/delete/${type}/${id}`, { method: 'DELETE' });
+      const result = await res.json();
+      if (res.ok) {
+        showMessage(result.message || `${type} deleted`, 'success');
+        // refresh project data
+        const projRes = await fetch(`/api/projects/${projectId}`);
+        if (projRes.ok) {
+          const data = await projRes.json();
+          renderExistingMediaPreviews(data);
+        }
+      } else {
+        showMessage(result.message || 'Error deleting', 'error');
+      }
+    } catch (err) {
+      showMessage('Network error', 'error');
+    }
+  }
+
+  async function deleteProject(id) {
+    if (!confirm('Are you sure you want to delete this project?')) return;
+    try {
+      const response = await fetch(`/api/projects/${id}`, { method: 'DELETE' });
+      const result = await response.json();
+      if (response.ok) {
+        showMessage('Project deleted successfully!', 'success');
+        document.getElementById('existingProjectForm').innerHTML = '';
+        document.getElementById('existingProjectSelect').value = '';
+      } else {
+        showMessage(result.message || 'Error deleting project', 'error');
+      }
+    } catch (err) {
+      showMessage('Network error', 'error');
+    }
+  }
+
+  // User Management Functions
+  async function updateUsername() {
+    const newUsername = document.getElementById('newUsername').value.trim();
+    if (!newUsername) {
+      showMessage('Username cannot be empty', 'error');
+      return;
+    }
+    if (newUsername.length < 3) {
+      showMessage('Username must be at least 3 characters', 'error');
+      return;
+    }
+    
+    try {
+      const response = await fetch('/api/user/username', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: newUsername })
+      });
+      const result = await response.json();
+      
+      if (response.ok) {
+        showMessage('Username updated successfully!', 'success');
+        document.getElementById('currentUsername').value = newUsername;
+        document.getElementById('newUsername').value = '';
+      } else {
+        showMessage(result.message || 'Error updating username', 'error');
+      }
+    } catch (error) {
+      showMessage('Network error', 'error');
+    }
+  }
+
+  async function updateMobile() {
+    const newMobile = document.getElementById('newMobile').value.trim();
+    if (newMobile && (!/^\d{10}$/.test(newMobile))) {
+      showMessage('Mobile number must be 10 digits', 'error');
+      return;
+    }
+    
+    try {
+      const response = await fetch('/api/user/mobile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mobile: newMobile })
+      });
+      const result = await response.json();
+      
+      if (response.ok) {
+        showMessage('Mobile number updated successfully!', 'success');
+        document.getElementById('currentMobile').value = newMobile || '';
+        document.getElementById('newMobile').value = '';
+      } else {
+        showMessage(result.message || 'Error updating mobile', 'error');
+      }
+    } catch (error) {
+      showMessage('Network error', 'error');
+    }
+  }
+
+  async function loadUserProfile() {
+    try {
+      const response = await fetch('/api/user/profile');
+      if (response.ok) {
+        const data = await response.json();
+        document.getElementById('currentUsername').value = data.username || '';
+        document.getElementById('currentMobile').value = data.mobile || '';
+      } else {
+        showMessage('Error loading user profile', 'error');
+      }
+    } catch (error) {
+      showMessage('Network error', 'error');
+    }
+  }
+
+  // Testimonial Management Functions
+  async function loadTestimonials() {
+    try {
+      const response = await fetch('/api/admin/testimonials');
+      if (response.ok) {
+        const testimonials = await response.json();
+        displayTestimonials(testimonials);
+      } else {
+        showMessage('Error loading testimonials', 'error');
+        document.getElementById('testimonial-list').innerHTML = '<p>Error loading testimonials</p>';
+      }
+    } catch (error) {
+      showMessage('Network error', 'error');
+      document.getElementById('testimonial-list').innerHTML = '<p>Network error</p>';
+    }
+  }
+
+  function displayTestimonials(testimonials) {
+    const container = document.getElementById('testimonial-list');
+    if (testimonials.length === 0) {
+      container.innerHTML = '<p>No testimonials found</p>';
+      return;
+    }
+
+    container.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3>Manage Testimonials</h3>
+        <button onclick="loadTestimonials()" style="margin: 0;">Refresh</button>
+      </div>
+      <div style="max-height: 400px; overflow-y: auto; border: 1px solid #eee; border-radius: 6px; padding: 10px;">
+        ${testimonials.map(t => `
+          <div style="border: 1px solid #ddd; border-radius: 6px; padding: 15px; margin-bottom: 10px; background: #fafafa;">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+              <div>
+                <strong>${escapeHtml(t.name)}</strong>
+                <span style="color: #666; margin-left: 10px;">${escapeHtml(t.address)}</span>
+                <div style="margin: 5px 0;">
+                  ${'★'.repeat(t.star_rating)}${'☆'.repeat(5 - t.star_rating)}
+                  <span style="margin-left: 5px;">(${t.star_rating}/5)</span>
+                </div>
+                <p style="margin: 5px 0; font-style: italic;">"${escapeHtml(t.text_review)}"</p>
+                <small style="color: #888;">${new Date(t.created_at).toLocaleString()}</small>
+                <span style="margin-left: 10px; padding: 2px 8px; border-radius: 3px; font-size: 12px; ${
+                  t.is_approved ? 'background: #d4edda; color: #155724;' : 'background: #f8d7da; color: #721c24;'
+                }">
+                  ${t.is_approved ? 'Approved' : 'Pending'}
+                </span>
+              </div>
+              <div style="display: flex; gap: 5px; flex-direction: column;">
+                ${!t.is_approved ? `<button onclick="approveTestimonial(${t.id})" style="background: #28a745; margin: 0;">Approve</button>` : ''}
+                ${t.is_approved ? `<button onclick="rejectTestimonial(${t.id})" style="background: #ffc107; margin: 0;">Reject</button>` : ''}
+                <button onclick="deleteTestimonial(${t.id})" style="background: #dc3545; margin: 0;">Delete</button>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  async function approveTestimonial(id) {
+    if (!confirm('Approve this testimonial?')) return;
+    try {
+      const response = await fetch(`/api/admin/testimonials/${id}/approve`, { method: 'PUT' });
+      const result = await response.json();
+      if (response.ok) {
+        showMessage('Testimonial approved successfully', 'success');
+        loadTestimonials();
+      } else {
+        showMessage(result.message || 'Error approving testimonial', 'error');
+      }
+    } catch (error) {
+      showMessage('Network error', 'error');
+    }
+  }
+
+  async function rejectTestimonial(id) {
+    if (!confirm('Reject this testimonial?')) return;
+    try {
+      const response = await fetch(`/api/admin/testimonials/${id}/reject`, { method: 'PUT' });
+      const result = await response.json();
+      if (response.ok) {
+        showMessage('Testimonial rejected successfully', 'success');
+        loadTestimonials();
+      } else {
+        showMessage(result.message || 'Error rejecting testimonial', 'error');
+      }
+    } catch (error) {
+      showMessage('Network error', 'error');
+    }
+  }
+
+  async function deleteTestimonial(id) {
+    if (!confirm('Are you sure you want to delete this testimonial? This action cannot be undone.')) return;
+    try {
+      const response = await fetch(`/api/admin/testimonials/${id}`, { method: 'DELETE' });
+      const result = await response.json();
+      if (response.ok) {
+        showMessage('Testimonial deleted successfully', 'success');
+        loadTestimonials();
+      } else {
+        showMessage(result.message || 'Error deleting testimonial', 'error');
+      }
+    } catch (error) {
+      showMessage('Network error', 'error');
+    }
+  }
+
+  // initial load
+  window.addEventListener('DOMContentLoaded', async function() {
+    const res = await fetch('/api/contact');
+    if (res.ok) {
+      const data = await res.json();
+      document.getElementById('phone1').value = data.phone1 || '';
+      document.getElementById('phone2').value = data.phone2 || '';
+      document.getElementById('email').value = data.email || '';
+      document.getElementById('address').value = data.office_address || '';
+    }
+    
+    const aboutRes = await fetch('/api/about');
+    if (aboutRes.ok) {
+      const data = await aboutRes.json();
+      document.getElementById('aboutName').value = data.name || '';
+      document.getElementById('aboutTitle').value = data.title || '';
+      document.getElementById('aboutDescription').value = data.description || '';
+    }
+    document.getElementById('aboutImagePreview').src = '/media/about/image?' + new Date().getTime();
+    
+    // Load user profile
+    await loadUserProfile();
+    
+    // Load testimonials
+    await loadTestimonials();
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pawan Dubey's Portfolio</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fahkwang" />
+</head>
+
+<body>
+  <!-- Top Header: Logo and Menu Icon -->
+  <header class="top-header">
+    <div class="logo-text">
+      <b>Pawan <span>Dubey</span></b>
+    </div>
+    <i class='bx bx-menu' id="menu-icon"></i>
+    
+    <!-- New DNS Logo Button -->
+    <a href="https://dnshomes.in" class="dns-logo-button">
+      <img src="{{ url_for('static', filename='images/home images/dnshomes-logo.png') }}" alt="DNS Homes Logo"
+        class="dns-logo-img" />
+      <span class="dns-button-text"></span>
+    </a>
+    
+    <!-- Keep original desktop logo for reference -->
+    <a href="https://dnshomes.in" class="logo-link desktop-logo" style="display: none;">
+      <img src="{{ url_for('static', filename='images/home images/dnshomes-logo.png') }}" alt="DNS Homes Logo"
+        class="logo-img" />
+    </a>
+  </header>
+
+  <!-- Main Header: Navigation -->
+  <header class="header">
+    <nav class="navbar">
+      <a href="https://dnshomes.in" class="mobile-logo-link">
+        <img src="{{ url_for('static', filename='images/home images/dnshomes-logo.png') }}" alt="DNS Homes Logo"
+          class="logo-img" />
+      </a>
+      <a href="#home">Home</a>
+      <a href="#about">About Me</a>
+      <a href="#services">Services</a>
+      <a href="#projects">Projects</a>
+      <a href="#testimonials">Testimonials</a>
+      <a href="{{ url_for('login') }}" id="login-link">Login</a>
+      <a href="#footer">Contact Me</a>
+    </nav>
+  </header>
+
+  <!-- ===== HOME ===== -->
+  <section id="home" class="home visible">
+    <div class="home-content">
+      <img src="{{ url_for('static', filename='images/home images/dnshomes-logo.png') }}" alt="home-img" width="250" class="float-animation">
+      <h1><span style="font-family: 'Fahkwang', sans-serif; font-size: 3rem; color: #977f4d;">DNS HOMES PVT.LTD</span>
+      </h1>
+      <p><b>Building your dream spaces with quality and trust.<br>
+          (Est. 2020)</b></p>
+      <a class="btn"><i class='bx bxs-file-pdf file-icon' id="homeFileIcon"></i></a>
+      <a href="mailto:info@dnshomes.in" class="btn"><i class='bx bxs-envelope'></i></a>
+      <a href="https://maps.app.goo.gl/q7Qh4G3fHWc5M5oz9" class="btn"><i class='bx bxs-map'></i></a>
+      <a href="#footer" class="btn" onclick="openBankingPDF()"><i class='bx bxs-bank'></i></a>
+      <br />
+      <h1><span style="font-family: 'Fahkwang', sans-serif; font-size: 3rem; color: #7c5501;">Hi!</span>, I am <span
+          style="font-family: 'Fahkwang', sans-serif; font-size: 3.5rem; color: #7c5501;">Pawan Dubey</span></h1>
+      <h4><b>(Diamond Diplomat, DNS HOMES PVT.LTD.)</b></h4>
+      <a href="#footer" class="btn">Get In Touch</a>
+    </div>
+  </section>
+
+  <!-- ===== HOME IMAGES ===== -->
+  <div class="home-container">
+    {% for img in home_images %}
+    <img src="{{ url_for('serve_project_image', image_id=img.id) }}" alt="Home Image" class="home-img" />
+    {% endfor %}
+  </div>
+
+  <div class="section-box">
+    <!-- ===== ABOUT ===== -->
+    <h2 class="heading">About Me</h2>
+    <section id="about" class="about">
+      <div class="about-img">
+        <img src="{{ url_for('serve_about_image') }}" alt="About Image">
+      </div>
+      <div class="about-text">
+        <h2>{{ about.name }}</h2>
+        <h4>{{ about.title }}</h4>
+        <p>{{ about.description }}</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="section-box">
+    <!-- ===== SERVICES ===== -->
+    <section id="services" class="services">
+      <h2 class="heading">Services we provide</h2>
+      <div class="service-container">
+        <div class="service-box">
+          <i class='bx bx-building-house'></i>
+          <h3>Property Development</h3>
+          <p>From land acquisition to project completion, I develop modern and premium properties.</p>
+        </div>
+        <div class="service-box">
+          <i class='bx bx-hard-hat'></i>
+          <h3>Constructions</h3>
+          <p>We construct astonishing properties.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="section-box">
+    <!-- ===== RUNNING PROJECTS ===== -->
+    <section id="projects" class="projects">
+      <h2 class="heading">Our Running Projects</h2>
+      <div class="project-grid">
+        {% for project in running_projects %}
+        <div class="project-card">
+          {% if project.images|length > 0 %}
+          <img src="{{ url_for('serve_project_image', image_id=project.images[0].id) }}" alt="{{ project.title }}">
+          {% else %}
+          <img src="{{ url_for('static', filename='p2.webp') }}" alt="{{ project.title }}">
+          {% endif %}
+          <div class="project-text">
+            <h3>{{ project.title }}</h3>
+            <h4>{{ project.address }}</h4>
+            <p>{{ project.description }}</p>
+            <i class='bx bxs-info-circle info-icon' data-info="{{ project.info }}"></i>
+            {% if project.images|length > 0 %}
+            <span class="gallery-icon"
+              data-gallery-files="{% for image in project.images %}{{ url_for('serve_project_image', image_id=image.id) }}{% if not loop.last %},{% endif %}{% endfor %}">
+              <i class='bx bx-images'></i>
+            </span>
+
+            {% endif %}
+            {% if project.videos|length > 0 %}
+            <span class="video-icon"
+              data-videos-files="{% for video in project.videos %}{{ url_for('serve_project_video', video_id=video.id) }}{% if not loop.last %},{% endif %}{% endfor %}">
+              <i class='bx bxs-videos'></i>
+            </span>
+
+            {% endif %}
+            {% if project.map_url %}
+            <a href="{{ project.map_url }}" class='bx bxs-map' target="_blank"></a>
+            {% endif %}
+            <div class="file-dropdown" id="file-dropdown-{{ loop.index }}">
+              {% for file in project.files %}
+              <div class="file-entry">
+                <span>{{ file.file_name }}</span>
+                <a href="{{ url_for('serve_project_file', file_id=file.id) }}" download>Download</a>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+
+  <div class="section-box">
+    <!-- ===== COMPLETED PROJECTS ===== -->
+    <section id="completed-projects" class="projects">
+      <h2 class="heading">Our Completed Projects</h2>
+      <div class="project-grid">
+        {% for project in completed_projects %}
+        <div class="project-card">
+          {% if project.images|length > 0 %}
+          <img src="{{ url_for('serve_project_image', image_id=project.images[0].id) }}" alt="{{ project.title }}">
+          {% else %}
+          <img src="{{ url_for('static', filename='p2.webp') }}" alt="{{ project.title }}">
+          {% endif %}
+          <div class="project-text">
+            <h3>{{ project.title }}</h3>
+            <h4>{{ project.address }}</h4>
+            <p>{{ project.description }}</p>
+            <i class='bx bxs-info-circle info-icon' data-info="{{ project.info }}"></i>
+            {% if project.images|length > 0 %}
+            <span class="gallery-icon"
+              data-gallery-files="{% for image in project.images %}{{ url_for('serve_project_image', image_id=image.id) }}{% if not loop.last %},{% endif %}{% endfor %}">
+              <i class='bx bx-images'></i>
+            </span>
+
+            {% endif %}
+            {% if project.videos|length > 0 %}
+            <span class="video-icon"
+              data-videos-files="{% for video in project.videos %}{{ url_for('serve_project_video', video_id=video.id) }}{% if not loop.last %},{% endif %}{% endfor %}">
+              <i class='bx bxs-videos'></i>
+            </span>
+
+            {% endif %}
+            {% if project.map_url %}
+            <a href="{{ project.map_url }}" class='bx bxs-map' target="_blank"></a>
+            {% endif %}
+            <div class="file-dropdown" id="file-dropdown-{{ loop.index }}">
+              {% for file in project.files %}
+              <div class="file-entry">
+                <span>{{ file.file_name }}</span>
+                <a href="{{ url_for('serve_project_file', file_id=file.id) }}" download>Download</a>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+
+ <!-- <div class="section-box">-->
+    <!-- ===== TESTIMONIALS ===== -->
+  <!--<section id="testimonials" class="testimonials">
+      <h2 class="heading">Testimonials</h2>
+      <div class="wrapper">
+        <div class="testimonial-box">
+          <img src="client1.jpg" alt="Client Image">
+          <h4>- Client Name</h4>
+          <p>"The best real estate developer I have worked with! Delivered my dream home on time and with the finest
+            quality."</p>
+        </div>
+        <div class="testimonial-box">
+          <img src="client2.jpg" alt="Client Image">
+          <h4>- Client Name</h4>
+          <p>"Professional and reliable, with great attention to detail in every project."</p>
+        </div>
+        <div class="testimonial-box">
+          <img src="client3.jpg" alt="Client Image">
+          <h4>- Client Name</h4>
+          <p>"The best real estate developer I have worked with! Delivered my dream home on time and with the finest
+            quality."</p>
+        </div>
+      </div>
+    </section>
+  </div>-->
+
+  <div class="section-box">
+        <!-- ===== TESTIMONIALS ===== -->
+        <section id="testimonials" class="testimonials">
+          <h2 class="heading">Testimonials</h2>
+          <div class="wrapper">
+            {% if testimonials %}
+              {% for testimonial in testimonials %}
+              <div class="testimonial-box">
+                <h3>- {{ testimonial.name }}</h3>
+                <p><strong>{{ testimonial.address }}</strong></p>
+                <p>"{{ testimonial.text_review }}"</p>
+                <div class="star-rating-display">
+                  {% for i in range(1, 6) %}
+                    {% if i <= testimonial.star_rating %}
+                      <span class="star filled">★</span>
+                    {% else %}
+                      <span class="star">☆</span>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
+              {% endfor %}
+            {% else %}
+              <p>No testimonials available yet. Be the first to <a href="{{ url_for('review') }}">leave a review</a>!</p>
+            {% endif %}
+          </div>
+        </section>
+      </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer" id="footer">
+    <div class="footer-grid">
+      <div class="footer-col brand">
+        <h2>Pawan Dubey <br>Portfolio</h2>
+      </div>
+      <div class="footer-col contact">
+        <p><i class='bx bxs-phone'></i>
+          <a href="tel:{{ contact.phone1 }}" target="_blank">: {{ contact.phone1 }}</a>,<a
+            href="tel:{{ contact.phone2 }}" target="_blank">{{ contact.phone2 }}</a>
+        </p>
+        <p><i class='bx bxs-envelope'></i>
+          <a href="mailto:{{ contact.email }}" target="_blank">: {{ contact.email }}</a>
+        </p>
+        <p><i class='bx bxs-map'></i>: {{ contact.office_address }}</p>
+        <hr>
+        <div class="footer-social">
+          <h3>Social-sites</h3>
+          <a href="https://www.facebook.com/share/19Xi61BZCL/"><i class='bx bxl-facebook'></i></a>
+          <i class="bx-bxs-instagram"></i>
+        </div>
+      </div>
+      
+      <div class="footer-col subscribe">
+        <h3><b>Stay connected</b></h3>
+        <form>
+          <input type="text" name="name" placeholder="Full Name" required>
+          <input type="email" name="email" placeholder="Email" required>
+          <input type="tel" name="Phone number" placeholder="Phone number" required>
+          <input type="text" name="message" placeholder="message" required>
+          <button type="submit">Send message</button>
+        </form>
+        <br/>
+        <a href="{{ url_for('review') }}" class="btn" style="background-color:#977f4d; color:white; padding:10px 15px; border-radius:5px; text-decoration:none;">Review Us</a>
+      </div>
+    </div>
+    <b><br>
+      <p class="copyright">© 2025 Pawan Dubey. All right reserved<br>Powered and secured by
+        <a href="http://nirmanportfolio1999.netlify.app" target="_blank">Nirman kumar</a>
+      </p>
+    </b>
+  </footer>
+  
+  <!-- Gallery Modal -->
+  <div id="galleryModal" class="modal">
+    <span class="close" style="position:absolute;top:18px;right:28px;font-size:2rem;cursor:pointer;">&times;</span>
+    <div class="modal-content" style="position:relative;">
+      <!-- Left Arrow -->
+      <button id="prevSlide" class="modal-nav-arrow"
+        style="position:absolute;top:50%;left:18px;transform:translateY(-50%);z-index:2;">&#10094;</button>
+      <img id="modalImage" src="" alt="Gallery Slide" style="max-width:100%; max-height:80vh; display: none;">
+      <div id="galleryIndicators" class="gallery-indicators"></div>
+      <!-- Right Arrow -->
+      <button id="nextSlide" class="modal-nav-arrow"
+        style="position:absolute;top:50%;right:18px;transform:translateY(-50%);z-index:2;">&#10095;</button>
+    </div>
+    <!-- Download button at bottom of modal -->
+    <div class="modal-download-wrapper">
+      <a id="downloadBtn" class="download-btn" href="#" download>Download</a>
+    </div>
+  </div>
+
+  <!-- Video Modal -->
+  <div id="videoModal" class="modal">
+    <span class="close" style="position:absolute;top:18px;right:28px;font-size:2rem;cursor:pointer;">&times;</span>
+    <div class="modal-content" style="position:relative;">
+      <!-- Left Arrow -->
+      <button id="prevVideoSlide" class="modal-nav-arrow"
+        style="position:absolute;top:50%;left:18px;transform:translateY(-50%);z-index:2;">&#10094;</button>
+      <video id="modalVideo" controls style="max-width:100%; max-height:80vh; display: none;"></video>
+      <div id="videoIndicators" class="gallery-indicators"></div>
+      <!-- Right Arrow -->
+      <button id="nextVideoSlide" class="modal-nav-arrow"
+        style="position:absolute;top:50%;right:18px;transform:translateY(-50%);z-index:2;">&#10095;</button>
+    </div>
+    <!-- Download button at bottom of modal -->
+    <div class="modal-download-wrapper">
+      <a id="videoDownloadBtn" class="download-btn" href="#" download>Download</a>
+    </div>
+  </div>
+
+  <!-- Info Modal -->
+  <div id="infoModal" class="modal">
+    <span class="close-info">&times;</span>
+    <div class="modal-content" id="infoModalContent"
+      style="color:#222;background:#fff;padding:2rem;border-radius:10px;max-width:400px;">
+    </div>
+  </div>
+
+  <!-- File Modal -->
+  <div id="fileModal" class="modal">
+    <span class="close-file" style="position:absolute;top:18px;right:28px;font-size:2rem;cursor:pointer;">&times;</span>
+    <div class="modal-content"
+      style="max-width:600px; margin:10% auto; padding:20px; background:#fff; border-radius:10px; position:relative; box-shadow:0 5px 15px rgba(0,0,0,0.3);"
+      id="fileModalContent">
+      <!-- File links will be injected here dynamically -->
+    </div>
+  </div>
+
+
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const homeFileIcon = document.getElementById('homeFileIcon');
+      const fileModal = document.getElementById('fileModal');
+      const fileModalContent = document.getElementById('fileModalContent');
+      const fileClose = document.querySelector('.close-file');
+
+      // File links for Home PDF icon
+      const homeFiles = [
+        {
+          name: "DNS HOMES Pvt. Ltd. ISO Certificate",
+          url: "{{ url_for('static', filename='static/dns details/files/DNS HOMES PRIVATE LIMITED ISO Certificate.pdf') }}"
+        },
+        {
+          name: "REAL ESTATE REGULATORY AUTHORITY",
+          url: "{{ url_for('static', filename='static/dns details/files/REAL ESTATE REGULATORY AUTHORITY.pdf') }}"
+        },
+        {
+          name: "DNS MCA",
+          url: "{{ url_for('static', filename='static/dns details/files/DNS MCA details.jpg') }}"
+        },
+        {
+          name: "certificate of incorporation",
+          url: "{{ url_for('static', filename='static\dns details\files\certificate of incorporation.pdf') }}"
+        }
+
+      ];
+
+      homeFileIcon.addEventListener('click', () => {
+        let html = "<h3>DNS HOMES document Files</h3><br/>";
+        homeFiles.forEach(file => {
+          html += `
+            <div class="file-entry" style="display:flex; justify-content:space-between; margin-bottom: 10px; border-bottom:1px solid #ddd; padding-bottom:5px;">
+              <span>${file.name}</span>
+              <a href="${file.url}" download style="color: #007BFF;">Download</a>
+            </div>
+          `;
+        });
+
+        fileModalContent.innerHTML = html;
+        fileModal.style.display = 'block';
+      });
+
+      fileClose.addEventListener('click', () => {
+        fileModal.style.display = 'none';
+      });
+
+      window.addEventListener('click', (e) => {
+        if (e.target === fileModal) {
+          fileModal.style.display = 'none';
+        }
+      });
+    });
+  </script>
+  <script>
+    function openBankingPDF() {
+      //Create modal overlay
+      const modal = document.createElement('div');
+      modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;`;
+      // Create modal content
+      const modalContent = document.createElement('div');
+      modalContent.style.cssText = `
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 90%;
+    max-height: 90%;
+    position: relative;`;
+      // Create close button
+      const closeBtn = document.createElement('span');
+      closeBtn.innerHTML = '&times;';
+      closeBtn.style.cssText = `
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 30px;
+      cursor: pointer;
+      color: #333;
+      z-index: 1001;`;
+      // Create PDF iframe
+      const pdfFrame = document.createElement('iframe');
+      pdfFrame.src = "{{ url_for('static', filename='dns details/files/banking details.pdf') }}";
+      pdfFrame.style.cssText = `
+        width: 800px;
+        height: 600px;
+        border: none;
+        border-radius: 5px;
+        `;
+      // Handle responsive sizing
+      if (window.innerWidth < 768) {
+        pdfFrame.style.width = '100%';
+        pdfFrame.style.height = '500px';
+      }
+      // Append elements
+      modalContent.appendChild(closeBtn);
+      modalContent.appendChild(pdfFrame);
+      modal.appendChild(modalContent);
+      document.body.appendChild(modal);
+      // Close modal functionality
+      closeBtn.onclick = () => document.body.removeChild(modal);
+      modal.onclick = (e) => {
+        if (e.target === modal) document.body.removeChild(modal);
+      };
+      // Close on escape key
+      document.addEventListener('keydown', function escapeHandler(e) {
+        if (e.key === 'Escape') {
+          if (document.body.contains(modal)) {
+            document.body.removeChild(modal);
+            document.removeEventListener('keydown', escapeHandler);
+          }
+        }
+      });
+    }
+  </script>
+
+</body>
+
+</html>
